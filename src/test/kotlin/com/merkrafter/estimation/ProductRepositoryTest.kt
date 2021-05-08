@@ -4,16 +4,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 
 /**
  * @author merkrafter
  */
 @DataJpaTest
-internal class ProductRepositoryTest @Autowired constructor(
-    val entityManager: TestEntityManager,
-    val productRepository: ProductRepository
-) {
+internal class ProductRepositoryTest(@Autowired val productRepository: ProductRepository) {
 
     @Test
     fun `should find product with a price in the given range`() {
@@ -57,8 +53,7 @@ internal class ProductRepositoryTest @Autowired constructor(
 
     private fun createAndStoreProduct(name: String, price: Int): Product {
         val product = Product(name, price)
-        entityManager.persist(product)
-        entityManager.flush()
+        productRepository.save(product)
         return product
     }
 }
