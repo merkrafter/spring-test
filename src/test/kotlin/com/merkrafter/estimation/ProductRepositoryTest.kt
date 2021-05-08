@@ -17,10 +17,8 @@ internal class ProductRepositoryTest @Autowired constructor(
 
     @Test
     fun `should find product with a price in the given range`() {
-        val price = 5000
-        val book = Product("Book", price)
-        entityManager.persist(book)
-        entityManager.flush()
+        val price = 3500
+        val book = createAndStoreProduct("Book", price)
         val found = productRepository.findAllByPriceInEuroCentsBetween(price - 1, price + 1)
         assertThat(found).contains(book)
     }
@@ -28,29 +26,23 @@ internal class ProductRepositoryTest @Autowired constructor(
     @Test
     fun `should find product with a price equal to the lower limit of the range`() {
         val price = 5000
-        val book = Product("Book", price)
-        entityManager.persist(book)
-        entityManager.flush()
+        val book = createAndStoreProduct("Book", price)
         val found = productRepository.findAllByPriceInEuroCentsBetween(price, price + 1)
         assertThat(found).contains(book)
     }
 
     @Test
     fun `should find product with a price equal to the upper limit of the range`() {
-        val price = 5000
-        val book = Product("Book", price)
-        entityManager.persist(book)
-        entityManager.flush()
+        val price = 790
+        val magazine = createAndStoreProduct("Magazine", price)
         val found = productRepository.findAllByPriceInEuroCentsBetween(price - 1, price)
-        assertThat(found).contains(book)
+        assertThat(found).contains(magazine)
     }
 
     @Test
     fun `should not find product with a price outside the range`() {
         val price = 5000
-        val book = Product("Book", price)
-        entityManager.persist(book)
-        entityManager.flush()
+        createAndStoreProduct("Book", price)
         val found = productRepository.findAllByPriceInEuroCentsBetween(price + 1, price + 4)
         assertThat(found).isEmpty()
     }
@@ -58,10 +50,15 @@ internal class ProductRepositoryTest @Autowired constructor(
     @Test
     fun `should not find product when search range is empty`() {
         val price = 5000
-        val book = Product("Book", price)
-        entityManager.persist(book)
-        entityManager.flush()
+        createAndStoreProduct("Book", price)
         val found = productRepository.findAllByPriceInEuroCentsBetween(price + 1, price - 1)
         assertThat(found).isEmpty()
+    }
+
+    private fun createAndStoreProduct(name: String, price: Int): Product {
+        val product = Product(name, price)
+        entityManager.persist(product)
+        entityManager.flush()
+        return product
     }
 }
