@@ -7,5 +7,3 @@ interface PriceAssignable {
     val price: Price
 }
 
-@JvmInline
-value class Price(val value: Int)
