@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController
  * @author merkrafter
  */
 @RestController
-class EstimationController {
+class EstimationController(val productRepository: ProductRepository) {
 
-    @GetMapping("/")
-    fun listProducts(): List<String> {
-        return listOf("abc", "def")
+    @GetMapping("/products")
+    fun listProductNames(): List<String> {
+        return productRepository.findAll().map { it.name }
     }
 }
